@@ -3,6 +3,8 @@
 import time
 import logging
 import common
+import packet
+
 
 log = logging.getLogger("teardown-rancher")
 
@@ -35,7 +37,6 @@ def gce_delete_instance(compute, name):
 
 
 def packet_remove_devices(device_names):
-    import packet
     manager = packet.Manager(auth_token=common.packet_rancher_auth_token)
     devices = manager.list_devices(project_id=common.packet_rancher_project_id)
     for each in devices:
@@ -54,9 +55,6 @@ def packet_remove_devices(device_names):
 
 def main():
     compute = common.initialize_gcloud()
-
-    log.info("install packet-python ...")
-    common.install_python_client("packet-python")
 
     # destroy machines
     packet_remove_devices(common.packet_host_names)

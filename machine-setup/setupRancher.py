@@ -11,7 +11,7 @@ import shlex
 import errno
 import threading
 import common
-
+import packet
 
 log = logging.getLogger("setup-rancher")
 
@@ -23,6 +23,9 @@ gce_rancher_machine_type = os.environ["GCE_RANCHER_MACHINE_TYPE"]
 gce_rancher_os_img = os.environ["GCE_RANCHER_OS_IMG"]
 gce_startup_script_rancher = os.environ["GCE_STARTUP_SCRIPT_RANCHER"]
 gce_startup_script_nfs = os.environ["GCE_STARTUP_SCRIPT_NFS"]
+
+key_label = "longhorn:test"
+
 
 def silent_remove_file(filename):
     try:
@@ -204,7 +207,6 @@ def packet_register_to_cattle(device, registration_command):
 
 
 def packet_create_register_host(name, registration_command):
-    import packet
     manager = packet.Manager(auth_token=common.packet_rancher_auth_token)
     log.info("creating packet instance name: %s", name)
     device = manager.create_device(
@@ -247,13 +249,8 @@ def gce_create_server(compute, name, gce_startup_script):
     return gce_get_IP(compute, name)
 
 
-def initialize_packet(public_key, key_label):
-    log.info("install packet-python ...")
-    common.install_python_client("packet-python")
-
+def packet_upload_key(public_key):
     log.info("uploading packet public key: %s", public_key)
-
-    import packet
     manager = packet.Manager(auth_token=common.packet_rancher_auth_token)
 
     # update pre-existing key with the same label
@@ -287,8 +284,7 @@ def main():
     log.info("got registration_command from cattle: %s", registration_command)
 
     # create packet hosts
-    key_label = "longhorn:test"
-    initialize_packet(public_key, key_label)
+    packet_upload_key(public_key)
 
     threads = []
     for name in common.packet_host_names:
