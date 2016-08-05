@@ -1,5 +1,6 @@
 Steps to run the setupRancher.py and teardownRancher.py to setup and teardown machines for longhorn tests
 
+```
 # first create a properties file to retrieve machine build results from container
 # it will contain CATTLE_TEST_URL and LONGHORN_BACKUP_SERVER_IP
 touch $PROPERTY_FILE_NAME
@@ -9,3 +10,4 @@ docker run --rm -v $(pwd)/$PROPERTY_FILE_NAME:/$PROPERTY_FILE_NAME -e PROPERTY_F
 
 # call teardownRancher.py using environment variables to destroy longhorn test machines
 docker run --rm -e GCE_SERVICE_KEY_JSON="$GCE_SERVICE_KEY_JSON" -e GCE_RANCHER_PROJECT_NAME="$GCE_RANCHER_PROJECT_NAME" -e GCE_RANCHER_PROJECT_ZONE="$GCE_RANCHER_PROJECT_ZONE" -e GCE_NFS_SERVER_NAME="$GCE_NFS_SERVER_NAME" -e GCE_RANCHER_SERVER_NAME="$GCE_RANCHER_SERVER_NAME" -e PACKET_HOST_NAMES="$PACKET_HOST_NAMES" -e PACKET_RANCHER_AUTH_TOKEN="$PACKET_RANCHER_AUTH_TOKEN" -e PACKET_RANCHER_PROJECT_ID="$PACKET_RANCHER_PROJECT_ID" jimeng/longhorn-test:001 teardownRancher.py 
+```
